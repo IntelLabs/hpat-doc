@@ -1,0 +1,415 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Supported Pandas Operations &#8212; HPAT 0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Not Supported Python Programs" href="notsupported.html" />
+    <link rel="prev" title="User Guide" href="supported.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="supported-pandas-operations">
+<h1>Supported Pandas Operations<a class="headerlink" href="#supported-pandas-operations" title="Permalink to this headline">¶</a></h1>
+<p>Below is the list of the Pandas operators that HPAT supports.
+Optional arguments are not supported unless if specified.
+Since Numba doesn’t support Pandas, only these operations
+can be used for both large and small datasets.</p>
+<p>In addition:</p>
+<ul class="simple">
+<li>Accessing columns using both getitem (e.g. <code class="docutils literal notranslate"><span class="pre">df['A']</span></code>) and attribute
+(e.g. <code class="docutils literal notranslate"><span class="pre">df.A</span></code>) is supported.</li>
+<li>Using columns similar to Numpy arrays and performing data-parallel operations
+listed previously is supported.</li>
+<li>Filtering data frames using boolean arrays is supported
+(e.g. <code class="docutils literal notranslate"><span class="pre">df[df.A</span> <span class="pre">&gt;</span> <span class="pre">.5]</span></code>).</li>
+</ul>
+<div class="section" id="integer-nan-issue">
+<h2>Integer NaN Issue<a class="headerlink" href="#integer-nan-issue" title="Permalink to this headline">¶</a></h2>
+<p>DataFrame columns with integer data need special care. Pandas dynamically
+converts integer columns to floating point when NaN values are needed.
+This is because Numpy does not support NaN values for integers.
+HPAT does not perform this conversion unless enough information is
+available at compilation time. Hence, the user is responsible for manual
+conversion of integer data to floating point data if needed.</p>
+</div>
+<div class="section" id="input-output">
+<h2>Input/Output<a class="headerlink" href="#input-output" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.read_csv()</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li>Arguments <code class="docutils literal notranslate"><span class="pre">filepath_or_buffer</span></code>, <code class="docutils literal notranslate"><span class="pre">sep</span></code>, <code class="docutils literal notranslate"><span class="pre">delimiter</span></code>, <code class="docutils literal notranslate"><span class="pre">names</span></code>, <code class="docutils literal notranslate"><span class="pre">usecols</span></code>, <code class="docutils literal notranslate"><span class="pre">dtype</span></code>, and <code class="docutils literal notranslate"><span class="pre">parse_dates</span></code> are supported.</li>
+<li><code class="docutils literal notranslate"><span class="pre">filepath_or_buffer</span></code>, <code class="docutils literal notranslate"><span class="pre">names</span></code> and <code class="docutils literal notranslate"><span class="pre">dtype</span></code> arguments are required.</li>
+<li><code class="docutils literal notranslate"><span class="pre">names</span></code>, <code class="docutils literal notranslate"><span class="pre">usecols</span></code>, <code class="docutils literal notranslate"><span class="pre">parse_dates</span></code> should be constant lists.</li>
+<li><code class="docutils literal notranslate"><span class="pre">dtype</span></code> should be a constant dictionary of strings and types.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.read_parquet()</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li>If filename is constant, HPAT finds the schema from file at compilation time. Otherwise, schema should be provided.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="general-functions">
+<h2>General functions<a class="headerlink" href="#general-functions" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.merge()</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li>Arguments <code class="docutils literal notranslate"><span class="pre">left</span></code>, <code class="docutils literal notranslate"><span class="pre">right</span></code>, <code class="docutils literal notranslate"><span class="pre">as_of</span></code>, <code class="docutils literal notranslate"><span class="pre">how</span></code>, <code class="docutils literal notranslate"><span class="pre">on</span></code>, <code class="docutils literal notranslate"><span class="pre">left_on</span></code> and <code class="docutils literal notranslate"><span class="pre">right_on</span></code> are supported.</li>
+<li><code class="docutils literal notranslate"><span class="pre">on</span></code>, <code class="docutils literal notranslate"><span class="pre">left_on</span></code> and <code class="docutils literal notranslate"><span class="pre">right_on</span></code> should be constant strings or constant list of strings.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.concat()</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li>Input list or tuple of dataframes or series is supported.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="series">
+<h2>Series<a class="headerlink" href="#series" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.Series()</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li>Argument <code class="docutils literal notranslate"><span class="pre">data</span></code> can be a list or array.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Attributes:</p>
+<ul class="simple">
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Series.values</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Series.shape</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Series.ndim</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Series.size</span></code></li>
+</ul>
+<p>Methods:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.copy()</span></code></li>
+</ul>
+<p>Indexing, iteration:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.iat()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.iloc()</span></code></li>
+</ul>
+<p>Binary operator functions:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.add()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.sub()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.mul()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.div()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.truediv()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.floordiv()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.mod()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.pow()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.combine()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.lt()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.gt()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.le()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.ge()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.ne()</span></code></li>
+</ul>
+<p>Function application, GroupBy &amp; Window:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.apply()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.map()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.rolling()</span></code></li>
+</ul>
+<p>Computations / Descriptive Stats:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.abs()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.corr()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.count()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.cov()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.cumsum()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.describe()</span></code> currently returns a string instead of Series object.</li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.max()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.mean()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.median()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.min()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.nlargest()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.nsmallest()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.pct_change()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.prod()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.quantile()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.std()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.sum()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.var()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.unique()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.nunique()</span></code></li>
+</ul>
+<p>Reindexing / Selection / Label manipulation:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.head()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.idxmax()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.idxmin()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.take()</span></code></li>
+</ul>
+<p>Missing data handling:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.isna()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.notna()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.dropna()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.fillna()</span></code></li>
+</ul>
+<p>Reshaping, sorting:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.argsort()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.sort_values()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.append()</span></code></li>
+</ul>
+<p>Time series-related:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.shift()</span></code></li>
+</ul>
+<p>String handling:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.str.contains()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Series.str.len()</span></code></li>
+</ul>
+</div>
+<div class="section" id="dataframe">
+<h2>DataFrame<a class="headerlink" href="#dataframe" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><code class="xref py py-func docutils literal notranslate"><span class="pre">pandas.DataFrame()</span></code></p>
+<blockquote>
+<div><p>Only <code class="docutils literal notranslate"><span class="pre">data</span></code> argument with a dictionary input is supported.</p>
+</div></blockquote>
+</li>
+</ul>
+<p>Attributes and underlying data:</p>
+<ul class="simple">
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">DataFrame.values</span></code></li>
+</ul>
+<p>Indexing, iteration:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.head()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.iat()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.iloc()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.isin()</span></code></li>
+</ul>
+<p>Function application, GroupBy &amp; Window:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.apply()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.groupby()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.rolling()</span></code></li>
+</ul>
+<p>Computations / Descriptive Stats:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.describe()</span></code></li>
+</ul>
+<p>Missing data handling:</p>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.dropna()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.fillna()</span></code></li>
+</ul>
+<p>Reshaping, sorting, transposing</p>
+<ul>
+<li><p class="first"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.pivot_table()</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li>Arguments <code class="docutils literal notranslate"><span class="pre">values</span></code>, <code class="docutils literal notranslate"><span class="pre">index</span></code>, <code class="docutils literal notranslate"><span class="pre">columns</span></code> and <code class="docutils literal notranslate"><span class="pre">aggfunc</span></code> are supported.</li>
+<li>Annotation of pivot values is required.
+For example, <cite>&#64;hpat.jit(pivots={‘pt’: [‘small’, ‘large’]})</cite> declares the output pivot table <cite>pt</cite> will have columns called <cite>small</cite> and <cite>large</cite>.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.sort_values()</span></code> <cite>by</cite> argument should be constant string or constant list of strings.</p>
+</li>
+<li><p class="first"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame.append()</span></code></p>
+</li>
+</ul>
+</div>
+<div class="section" id="datetimeindex">
+<h2>DatetimeIndex<a class="headerlink" href="#datetimeindex" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">DatetimeIndex.year</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">DatetimeIndex.month</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">DatetimeIndex.day</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">DatetimeIndex.hour</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">DatetimeIndex.minute</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">DatetimeIndex.second</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">DatetimeIndex.microsecond</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">DatetimeIndex.nanosecond</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">DatetimeIndex.date</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DatetimeIndex.min()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">DatetimeIndex.max()</span></code></li>
+</ul>
+</div>
+<div class="section" id="timedeltaindex">
+<h2>TimedeltaIndex<a class="headerlink" href="#timedeltaindex" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">TimedeltaIndex.days</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">TimedeltaIndex.second</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">TimedeltaIndex.microsecond</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">TimedeltaIndex.nanosecond</span></code></li>
+</ul>
+</div>
+<div class="section" id="timestamp">
+<h2>Timestamp<a class="headerlink" href="#timestamp" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestamp.day</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestamp.hour</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestamp.microsecond</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestamp.month</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestamp.nanosecond</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestamp.second</span></code></li>
+<li><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestamp.year</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Timestamp.date()</span></code></li>
+</ul>
+</div>
+<div class="section" id="window">
+<h2>Window<a class="headerlink" href="#window" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.count()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.sum()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.mean()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.median()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.var()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.std()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.min()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.max()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.corr()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.cov()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">Rolling.apply()</span></code></li>
+</ul>
+</div>
+<div class="section" id="groupby">
+<h2>GroupBy<a class="headerlink" href="#groupby" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupBy.apply()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupBy.count()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupBy.max()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupBy.mean()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupBy.median()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupBy.min()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupBy.prod()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupBy.std()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupBy.sum()</span></code></li>
+<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">GroupBy.var()</span></code></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">HPAT</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supported.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Supported Pandas Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#integer-nan-issue">Integer NaN Issue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-output">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general-functions">General functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#series">Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dataframe">DataFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datetimeindex">DatetimeIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#timedeltaindex">TimedeltaIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#timestamp">Timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#window">Window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#groupby">GroupBy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notsupported.html">Not Supported Python Programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing HPAT</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="supported.html" title="previous chapter">User Guide</a></li>
+      <li>Next: <a href="notsupported.html" title="next chapter">Not Supported Python Programs</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/supportedpandas.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

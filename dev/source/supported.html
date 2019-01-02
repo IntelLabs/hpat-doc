@@ -15,7 +15,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Not Supported Python Programs" href="notsupported.html" />
+    <link rel="next" title="Supported Pandas Operations" href="supportedpandas.html" />
     <link rel="prev" title="Overview" href="overview.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -223,45 +223,6 @@ loop does not have cross iteration dependencies except for supported reductions.
 <p>Currently, reductions using <code class="docutils literal notranslate"><span class="pre">+=</span></code>, <code class="docutils literal notranslate"><span class="pre">*=</span></code>, <code class="docutils literal notranslate"><span class="pre">min</span></code>, and <code class="docutils literal notranslate"><span class="pre">max</span></code> operators are
 supported.</p>
 </div>
-<div class="section" id="supported-pandas-operations">
-<h2>Supported Pandas Operations<a class="headerlink" href="#supported-pandas-operations" title="Permalink to this headline">¶</a></h2>
-<p>Below is the list of the Pandas operators that HPAT supports. Since Numba
-doesn’t support Pandas, only these operations can be used for both large and
-small datasets.</p>
-<ol class="arabic">
-<li><p class="first">HPAT supports Dataframe creation with the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> constructor.
-Only a dictionary is supported as input. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">ranf</span><span class="p">(</span><span class="n">n</span><span class="p">)})</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Accessing columns using both getitem (e.g. <code class="docutils literal notranslate"><span class="pre">df['A']</span></code>) and attribute
-(e.g. <code class="docutils literal notranslate"><span class="pre">df.A</span></code>) is supported.</p>
-</li>
-<li><p class="first">Using columns similar to Numpy arrays and performing data-parallel operations
-listed previously is supported.</p>
-</li>
-<li><p class="first">Filtering data frames using boolean arrays is supported
-(e.g. <code class="docutils literal notranslate"><span class="pre">df[df.A</span> <span class="pre">&gt;</span> <span class="pre">.5]</span></code>).</p>
-</li>
-<li><p class="first">Rolling window operations with <cite>window</cite> and <cite>center</cite> options are supported.
-Here are a few examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">df</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">shift</span></code> operation (e.g. <code class="docutils literal notranslate"><span class="pre">df.A.shift(1)</span></code>) and <code class="docutils literal notranslate"><span class="pre">pct_change</span></code> operation
-(e.g. <code class="docutils literal notranslate"><span class="pre">df.A.pct_change()</span></code>) are supported.</p>
-</li>
-</ol>
-<p>DataFrame columns with integer data need special care. Pandas dynamically
-converts integer columns to floating point when NaN values are needed.
-This is because Numpy does not support NaN values for integers.
-HPAT does not perform this conversion unless enough information is
-available at compilation time. Hence, the user is responsible for manual
-conversion of integer data to floating point data if needed.</p>
-</div>
 <div class="section" id="file-i-o">
 <h2>File I/O<a class="headerlink" href="#file-i-o" title="Permalink to this headline">¶</a></h2>
 <p>Currently, HPAT supports I/O for the <a class="reference external" href="http://www.h5py.org/">HDF5</a> and
@@ -363,13 +324,13 @@ operators, as well as <code class="docutils literal notranslate"><span class="pr
 <li class="toctree-l2"><a class="reference internal" href="#automatic-parallelization">Automatic Parallelization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#supported-numpy-operations">Supported Numpy Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#explicit-parallel-loops">Explicit Parallel Loops</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#supported-pandas-operations">Supported Pandas Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#file-i-o">File I/O</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#print">Print</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#strings">Strings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dictionaries">Dictionaries</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="supportedpandas.html">Supported Pandas Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notsupported.html">Not Supported Python Programs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing HPAT</a></li>
 </ul>
@@ -379,7 +340,7 @@ operators, as well as <code class="docutils literal notranslate"><span class="pr
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
       <li>Previous: <a href="overview.html" title="previous chapter">Overview</a></li>
-      <li>Next: <a href="notsupported.html" title="next chapter">Not Supported Python Programs</a></li>
+      <li>Next: <a href="supportedpandas.html" title="next chapter">Supported Pandas Operations</a></li>
   </ul></li>
 </ul>
 </div>
@@ -408,7 +369,7 @@ operators, as well as <code class="docutils literal notranslate"><span class="pr
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, Ehsan Totoni.
+      &copy;.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>

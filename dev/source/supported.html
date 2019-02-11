@@ -86,6 +86,28 @@ as a 9 by 2 array, on three processors:</p>
 <p>HPAT replicates the arrays that are not distributed.
 This is called <cite>REP</cite> distribution for consistency.</p>
 </div>
+<div class="section" id="argument-and-return-variables">
+<h3>Argument and Return Variables<a class="headerlink" href="#argument-and-return-variables" title="Permalink to this headline">¶</a></h3>
+<p>HPAT assumes argument and return variables to jitted functions are
+replicated. However, the user can annotate these variables to indicate
+distributed data. In this case,
+the user is responsile for handling of the distributed data chunks outside
+the HPAT scope. For example, the data can come from other jitted functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@hpat</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">distributed</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">})</span>
+<span class="k">def</span> <span class="nf">example_return</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">A</span>
+
+<span class="nd">@hpat</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">distributed</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;B&#39;</span><span class="p">})</span>
+<span class="k">def</span> <span class="nf">example_arg</span><span class="p">(</span><span class="n">B</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">B</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">example_return</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">example_arg</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="distribution-report">
 <h3>Distribution Report<a class="headerlink" href="#distribution-report" title="Permalink to this headline">¶</a></h3>
 <p>The distributions found by HPAT can be printed using the
